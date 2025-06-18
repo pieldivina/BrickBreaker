@@ -1,41 +1,80 @@
 using UnityEngine;
-
+using Random = UnityEngine.Random;
 public class BallBehavior : MonoBehaviour
 {
-    public Vector2 speed = new(5.0f, 5.0f); // Speed of the ball
+    [SerializeField] private float _launchForce = 5.0f;
+    [SerializeField] private float _paddleInfluence = 0.3f;
+    [SerializeField] private float _ballSpeedIncrement = 0.9f;
+    [SerializeField] private float _minYVelocity = 2.1f;
     
-    // Limits for the ball
-    public float limitX = 9f;  
-    public float limitY = 4.7f;
+    private Rigidbody2D _rb;
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // Ternary operator
-        // condition ? passing : failing;
-        speed.x *= Random.value < 0.5 ? -1 : 1;
-    }
+        _rb = GetComponent<Rigidbody2D>();
+        _rb.gravityScale = 0.0f;
 
-    // Update is called once per frame
-    void Update()
+        ResetBall();
+    }
+    
+    private void FixedUpdate()
     {
-        Vector3 newPosition = transform.position + (Vector3)speed * Time.deltaTime;
+        Vector2 velocity = _rb.linearVelocity;
 
-        if (newPosition.x <= -limitX || newPosition.x >= limitX) // If ball reaches horizontal limits
-        { 
-            speed.x *= -1; // Direction is reversed
-            newPosition.x = Mathf.Clamp(newPosition.x, -limitX, limitX);
-        }
-        
-        if (newPosition.y >= limitY) // If ball reaches top limit
+        if (Mathf.Abs(velocity.y) < _minYVelocity)
         {
-            speed.y *= -1; // Direction is reversed 
-            newPosition.y = limitY;
+            float newY = _minYVelocity * Mathf.Sign(velocity.y != 0 ? velocity.y : 1);
+            velocity.y = newY;
+            _rb.linearVelocity = velocity;
         }
-
-        // Apply new position
-        transform.position = newPosition;
-        // transform.position += (Vector3)speed * Time.deltaTime; 
-        
     }
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Paddle"))
+        {
+            if (!Mathf.Approximately(other.rigidbody.linearVelocityX, 0.0f))
+            {
+             
+                Vector2 direction = _rb.linearVelocity * (1 - _paddleInfluence)
+                                    + other.rigidbody.linearVelocity * _paddleInfluence;
+                
+                _rb.linearVelocity = _rb.linearVelocity.magnitude * direction.normalized * _ballSpeedIncrement;
+
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("ScoreZone"))
+        {
+            ResetBall();
+        }
+    }
+
+    void ResetBall()
+    {
+        _rb.linearVelocity = Vector2.zero;
+        transform.position = new Vector3(0.0f, -4.02f, 0.0f); 
+        
+        Vector2 direction = new Vector2(
+            GetNonZeroRandomFloat(),
+            Mathf.Abs(GetNonZeroRandomFloat())
+        ).normalized;
+        
+        _rb.AddForce(direction * _launchForce,ForceMode2D.Impulse);
+    }
+    float GetNonZeroRandomFloat(float min = -1.0f, float max = 1.0f)
+    {
+        float num;
+                
+        do     
+        {
+            num = Random.Range(min, max);
+        } while (Mathf.Approximately(num,0.0f));
+           
+        return num;
+
+    }
+    
 }
