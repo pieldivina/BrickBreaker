@@ -2,8 +2,6 @@
 
 public class PaddleBehavior : MonoBehaviour
 {
-    [SerializeField] private float _speed = 10.0f;
-
     private float _direction = 0.0f;
     
     [SerializeField] private KeyCode _rightDirection;
@@ -21,7 +19,7 @@ public class PaddleBehavior : MonoBehaviour
 
     void FixedUpdate()
     {
-        _rb.linearVelocityX = _direction * _speed;
+        _rb.linearVelocityX = _direction * GameBehavior.Instance.PaddleSpeed;
     }
 
     void Update()

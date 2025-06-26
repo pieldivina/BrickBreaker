@@ -15,7 +15,13 @@ In this repo you will find the gameplay implementation of "Brick Breaker" includ
 4. Ball bouncing off the walls and paddle by the use of the physics engine.
 5. A set of bricks that dissapear on collision.
 
+*New additions (Jun 26, 2025)*
+
+6. Scoring system triggered by brick collision, displayed via the UI 
+7. Ball and paddle positions, and score, reset when the game ends.
+
 ## Game Demonstrations
 
 1. [First implementation](ScreenRecordings/BrickBreaker_Week2_Recording.mov)
 2. [Second implementation](ScreenRecordings/BrickBreaker_Week4_Recording.mov)
+3. [3rd implementation](ScreenRecordings/BrickBreaker_Week5_Recording.mov)

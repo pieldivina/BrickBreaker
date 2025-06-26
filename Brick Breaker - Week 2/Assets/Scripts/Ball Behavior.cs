@@ -2,11 +2,6 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 public class BallBehavior : MonoBehaviour
 {
-    [SerializeField] private float _launchForce = 5.0f;
-    [SerializeField] private float _paddleInfluence = 0.3f;
-    [SerializeField] private float _ballSpeedIncrement = 0.9f;
-    [SerializeField] private float _minYVelocity = 2.1f;
-    
     private Rigidbody2D _rb;
     
     void Start()
@@ -21,9 +16,9 @@ public class BallBehavior : MonoBehaviour
     {
         Vector2 velocity = _rb.linearVelocity;
 
-        if (Mathf.Abs(velocity.y) < _minYVelocity)
+        if (Mathf.Abs(velocity.y) < GameBehavior.Instance._minYVelocity)
         {
-            float newY = _minYVelocity * Mathf.Sign(velocity.y != 0 ? velocity.y : 1);
+            float newY = GameBehavior.Instance._minYVelocity * Mathf.Sign(velocity.y != 0 ? velocity.y : 1);
             velocity.y = newY;
             _rb.linearVelocity = velocity;
         }
@@ -35,19 +30,21 @@ public class BallBehavior : MonoBehaviour
             if (!Mathf.Approximately(other.rigidbody.linearVelocityX, 0.0f))
             {
              
-                Vector2 direction = _rb.linearVelocity * (1 - _paddleInfluence)
-                                    + other.rigidbody.linearVelocity * _paddleInfluence;
+                Vector2 direction = _rb.linearVelocity * (1 - GameBehavior.Instance.PaddleInfluence)
+                                    + other.rigidbody.linearVelocity * GameBehavior.Instance.PaddleInfluence;
                 
-                _rb.linearVelocity = _rb.linearVelocity.magnitude * direction.normalized * _ballSpeedIncrement;
-
+                _rb.linearVelocity = _rb.linearVelocity.magnitude * direction.normalized;
+                
+                _rb.linearVelocity *= GameBehavior.Instance.BallSpeedIncrement;
             }
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("ScoreZone"))
+        if (other.gameObject.CompareTag("ResetZone"))
         {
+            GameBehavior.Instance.ResetGame();
             ResetBall();
         }
     }
@@ -58,23 +55,10 @@ public class BallBehavior : MonoBehaviour
         transform.position = new Vector3(0.0f, -4.02f, 0.0f); 
         
         Vector2 direction = new Vector2(
-            GetNonZeroRandomFloat(),
-            Mathf.Abs(GetNonZeroRandomFloat())
+            Utilities.GetNonZeroRandomFloat(),
+            Utilities.GetNonZeroRandomFloat()
         ).normalized;
         
-        _rb.AddForce(direction * _launchForce,ForceMode2D.Impulse);
+        _rb.AddForce(direction * GameBehavior.Instance.InitBallForce,ForceMode2D.Impulse);
     }
-    float GetNonZeroRandomFloat(float min = -1.0f, float max = 1.0f)
-    {
-        float num;
-                
-        do     
-        {
-            num = Random.Range(min, max);
-        } while (Mathf.Approximately(num,0.0f));
-           
-        return num;
-
-    }
-    
 }

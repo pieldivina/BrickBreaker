@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ball
   - Paddle
+  - Brick
+  - ResetZone
   layers:
   - Default
   - TransparentFX
