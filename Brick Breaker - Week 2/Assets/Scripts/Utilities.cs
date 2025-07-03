@@ -2,6 +2,10 @@ using UnityEngine;
 
 public static class Utilities
 {
+    public enum GameState
+    {
+        Play, Pause
+    }
     public static float GetNonZeroRandomFloat(float min = -1.0f, float max = 1.0f)
     {
         float num;

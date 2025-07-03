@@ -20,8 +20,17 @@ In this repo you will find the gameplay implementation of "Brick Breaker" includ
 6. Scoring system triggered by brick collision, displayed via the UI 
 7. Ball and paddle positions, and score, reset when the game ends.
 
+*New additions (Jun 26, 2025)*
+
+8. Pause menu acessible by pressing 'P'.
+9. Soundtrack and sound effects added.
+10. Bricks now have color matching health status (red, green and yellow).
+
 ## Game Demonstrations
 
 1. [First implementation](ScreenRecordings/BrickBreaker_Week2_Recording.mov)
 2. [Second implementation](ScreenRecordings/BrickBreaker_Week4_Recording.mov)
 3. [3rd implementation](ScreenRecordings/BrickBreaker_Week5_Recording.mov)
+4. [4th implementation](ScreenRecordings/BrickBreaker_Week6_Recording.mov)
+
+
